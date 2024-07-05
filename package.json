@@ -1,0 +1,24 @@
+{
+  "name": "discord_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SheaDevop/Discord_bot.git"
+  },
+  "author": "ignacio dieguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SheaDevop/Discord_bot/issues"
+  },
+  "homepage": "https://github.com/SheaDevop/Discord_bot#readme",
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
