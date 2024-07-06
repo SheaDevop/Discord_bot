@@ -74,12 +74,14 @@ app.listen(PORT, (error) => {
   }
 });
 
+//define routes
 
+// /api/server-info route
 app.get('/api/server-info', function(req, res) {
   res.send(serverInfo)
 });
 
-
+// /api/send-message route
 app.post('/api/send-message', function(req, res, next) {
   if(req.headers.usertoken !== process.env.USER_TOKEN){
     res.status(401).send("Unauthorized")
