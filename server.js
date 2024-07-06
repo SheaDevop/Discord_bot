@@ -1,6 +1,6 @@
 //imports
 const express = require('express');
-const routes = require('./routes/routes');
+const bodyParser = require('body-parser');
 //env config
 require('dotenv').config();
 const PORT = process.env.PORT
@@ -10,7 +10,7 @@ const CHANNEL_ID = process.env.CHANNEL_ID
 //require the discord.js classes
 const {Client, Events, GatewayIntentBits} = require('discord.js');
 //require utility functions
-const { respondToMsg, assignRole } = require('./utils/utils.js');
+const { respondToMsg, assignRole} = require('./utils/utils.js');
 //create a new client instance aka a bot instance
 const client = new Client({
   intents: [
@@ -44,25 +44,27 @@ client.on('guildMemberAdd', assignRole);
 //respond to user !commands
 client.on('messageCreate', respondToMsg);
 
-//initialize serverInfo object
-const serverInfo = {}
-//populate serverInfo object when a guild is available
+//get serverInfo
+let serverInfo
 client.on('guildAvailable', guild => {
-  serverInfo.serverName = guild.name;
-  serverInfo.memberCount = guild.memberCount;
-  serverInfo.isAvailable = guild.available;
-  serverInfo.createdAt = guild.createdAt;
-  serverInfo.description = guild.description;
-  serverInfo.id = guild.id;
+  serverInfo = {
+    serverName: guild.name,
+    memberCount: guild.memberCount,
+    isAvailable: guild.available,
+    createdAt: guild.createdAt,
+    description: guild.description,
+    id: guild.id,
+    memberNames: []
+  }
+  guild.members.cache.forEach(member => serverInfo.memberNames.push(member.user.username))
 });
 
 
 //app server functionality
 //create an instance of the express application
 const app = express();
-
-app.use('/', routes)
-
+//use bodyParser
+app.use(bodyParser());
 //start the server and lister to the port
 app.listen(PORT, (error) => {
   if(!error){
@@ -73,8 +75,19 @@ app.listen(PORT, (error) => {
 });
 
 
+app.get('/api/server-info', function(req, res) {
+  res.send(serverInfo)
+});
 
 
-module.exports = {
-  serverInfo
-}
+app.post('/api/send-message', function(req, res, next) {
+  if(req.headers.usertoken !== process.env.USER_TOKEN){
+    res.status(401).send("Unauthorized")
+  } else if(req.body.channelID !== CHANNEL_ID){
+    res.status(404).send("wrong text channel")
+  } else {
+    const channel = client.channels.cache.get(req.body.channelID)
+    channel.send(req.body.message)
+    res.status(200).json("message sent");
+  }
+});
