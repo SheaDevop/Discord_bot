@@ -3,7 +3,7 @@ require('dotenv').config();
 const ROLE_ID = process.env.ROLE_ID
 
 //aux functions
-
+//respond to message commands with dummy text
 const respondToMsg = msg => {
   if (msg.content === '!help') {
     msg.reply(`Robots are designed to help you ${msg.author.username}`);
@@ -14,6 +14,7 @@ const respondToMsg = msg => {
   }
 };
 
+//assigns a role to server new user
 const assignRole = member => {
   const role = member.guild.roles.cache.find(role => role.id === ROLE_ID);
   member.roles.add(role, 'Welcome to my server');
