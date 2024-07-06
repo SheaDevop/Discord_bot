@@ -93,3 +93,5 @@ app.listen(PORT, (error) => {
     console.error(error);
   }
 });
+
+module.exports = app;
