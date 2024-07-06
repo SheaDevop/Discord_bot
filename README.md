@@ -1,4 +1,4 @@
-# Discord Bot Using:
+# Discord bot built using:
 ### Node.js
 ### Express.js
 ### Discord.js
