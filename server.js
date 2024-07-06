@@ -65,17 +65,8 @@ client.on('guildAvailable', guild => {
 const app = express();
 //use bodyParser
 app.use(bodyParser());
-//start the server and lister to the port
-app.listen(PORT, (error) => {
-  if(!error){
-    console.log(`Server is running on port ${PORT}`);
-  } else {
-    console.error(error);
-  }
-});
 
 //define routes
-
 // /api/server-info route
 app.get('/api/server-info', function(req, res) {
   res.send(serverInfo)
@@ -91,5 +82,14 @@ app.post('/api/send-message', function(req, res, next) {
     const channel = client.channels.cache.get(req.body.channelID)
     channel.send(req.body.message)
     res.status(200).json("message sent");
+  }
+});
+
+//start the server and lister to the port
+app.listen(PORT, (error) => {
+  if(!error){
+    console.log(`Server is running on port ${PORT}`);
+  } else {
+    console.error(error);
   }
 });
