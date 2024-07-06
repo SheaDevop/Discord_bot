@@ -2,6 +2,8 @@
 require('dotenv').config();
 const ROLE_ID = process.env.ROLE_ID
 
+//aux functions
+
 const respondToMsg = msg => {
   if (msg.content === '!help') {
     msg.reply(`Robots are designed to help you ${msg.author.username}`);
