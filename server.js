@@ -1,13 +1,16 @@
 //imports
-require('dotenv').config();
 const express = require('express');
 const routes = require('./routes/routes');
+//env config
+require('dotenv').config();
+const PORT = process.env.PORT
+const CHANNEL_ID = process.env.CHANNEL_ID
 
 //Bot functionality
 //require the discord.js classes
 const {Client, Events, GatewayIntentBits} = require('discord.js');
 //require utility functions
-const { respondToMsg } = require('./utils/utils.js');
+const { respondToMsg, assignRole } = require('./utils/utils.js');
 //create a new client instance aka a bot instance
 const client = new Client({
   intents: [
@@ -28,7 +31,7 @@ client.login(process.env.CLIENT_TOKEN);
 
 //greet a new member
 client.on('guildMemberAdd', member => {
-  const channel = client.channels.cache.get('1258503343291105367');
+  const channel = client.channels.cache.get(CHANNEL_ID);
   if (member.user.bot) return;
   else {
     channel.send(`Greetings ${member.user.username}`);
@@ -36,18 +39,13 @@ client.on('guildMemberAdd', member => {
 });
 
 //assign a role to new member
-client.on('guildMemberAdd', member => {
-  const role = member.guild.roles.cache.find(role => role.id === '1258506034088120341');
-  member.roles.add(role, 'Welcome to my server');
-});
+client.on('guildMemberAdd', assignRole);
 
 //respond to user !commands
 client.on('messageCreate', respondToMsg);
 
 
 //app server functionality
-//set port
-const PORT = process.env.PORT
 //create an instance of the express application
 const app = express();
 
