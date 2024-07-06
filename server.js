@@ -44,6 +44,18 @@ client.on('guildMemberAdd', assignRole);
 //respond to user !commands
 client.on('messageCreate', respondToMsg);
 
+//initialize serverInfo object
+const serverInfo = {}
+//populate serverInfo object when a guild is available
+client.on('guildAvailable', guild => {
+  serverInfo.serverName = guild.name;
+  serverInfo.memberCount = guild.memberCount;
+  serverInfo.isAvailable = guild.available;
+  serverInfo.createdAt = guild.createdAt;
+  serverInfo.description = guild.description;
+  serverInfo.id = guild.id;
+});
+
 
 //app server functionality
 //create an instance of the express application
@@ -59,3 +71,10 @@ app.listen(PORT, (error) => {
     console.error(error);
   }
 });
+
+
+
+
+module.exports = {
+  serverInfo
+}

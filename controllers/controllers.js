@@ -1,6 +1,8 @@
+const serverInfo = require('../server.js')
+
 //server-info controller
 const retrieveInfo = (req, res) => {
-    res.send('json object with the server info');
+    res.send(serverInfo);
 }
 
 //send message to server channel controller
