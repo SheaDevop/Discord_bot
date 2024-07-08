@@ -1,33 +1,41 @@
-//imports
-const express = require('express');
-const bodyParser = require('body-parser');
-//env config
+//env config and imports
 require('dotenv').config();
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3000
 const CHANNEL_ID = process.env.CHANNEL_ID
+const express = require('express');
+const { Client, GatewayIntentBits } = require('discord.js');
+const { respondToMsg, assignRole } = require('./utils/utils.js');
+
+//create an instance of the express application
+const app = express();
+// config express to handle JSON
+app.use(express.json());
+
 
 //Bot functionality
-//require the discord.js classes
-const {Client, Events, GatewayIntentBits} = require('discord.js');
-//require utility functions
-const { respondToMsg, assignRole} = require('./utils/utils.js');
-//create a new client instance aka a bot instance
+//create a new client instance
 const client = new Client({
   intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.GuildMembers
-	]
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
+  ],
 });
 
-//when the client is ready this code run only once
-client.once(Events.ClientReady, readyClient => {
-	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
+//when the client is ready start the server
+client.once('ready', () => {
+  console.log(`Ready! Logged in as ${client.user.tag}`);
 
-//bot log in
-client.login(process.env.CLIENT_TOKEN);
+  //start the server and listen to the port
+  app.listen(PORT, (error) => {
+    if(!error){
+      console.log(`Server is running on port ${PORT}`);
+    } else {
+      console.error(error);
+    }
+  });
+});
 
 //greet a new member
 client.on('guildMemberAdd', member => {
@@ -42,38 +50,48 @@ client.on('guildMemberAdd', member => {
 client.on('guildMemberAdd', assignRole);
 
 //respond to user !commands
-client.on('messageCreate', respondToMsg);
-
-//get serverInfo
-let serverInfo
-client.on('guildAvailable', guild => {
-  serverInfo = {
-    serverName: guild.name,
-    memberCount: guild.memberCount,
-    isAvailable: guild.available,
-    createdAt: guild.createdAt,
-    description: guild.description,
-    id: guild.id,
-    memberNames: []
+client.on('messageCreate', (msg) => {
+  if (!msg.author.bot) {
+    respondToMsg(msg);
   }
-  guild.members.cache.forEach(member => serverInfo.memberNames.push(member.user.username))
 });
 
+//log in with the client token
+client.login(process.env.CLIENT_TOKEN);
 
-//app server functionality
-//create an instance of the express application
-const app = express();
-//use bodyParser
-app.use(bodyParser());
-
-//define routes
+//Define routes
 // /api/server-info route
-app.get('/api/server-info', function(req, res) {
-  res.send(serverInfo)
-});
+  app.get('/api/server-info', async (req, res) => {
+    try {
+      //gets the guild
+      const guild = client.guilds.cache.first();
+      if (!guild) {
+        return res.status(404).json({ error: 'Server not found' });
+      }
+
+      //fetch all the members
+      await guild.members.fetch();
+      //gets the server info
+      const serverInfo = {
+        serverName: guild.name,
+        memberCount: guild.memberCount,
+        isAvailable: guild.available,
+        createdAt: guild.createdAt,
+        id: guild.id,
+        memberNames: guild.members.cache.map(member => member.user.username),
+      };
+
+      //retrieve server info
+      res.status(200).json(serverInfo);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Failed to fetch server info' });
+    }
+  });
+
 
 // /api/send-message route
-app.post('/api/send-message', function(req, res, next) {
+app.post('/api/send-message', function(req, res) {
   if(req.headers.usertoken !== process.env.USER_TOKEN){
     res.status(401).send("Unauthorized")
   } else if(req.body.channelID !== CHANNEL_ID){
@@ -85,13 +103,10 @@ app.post('/api/send-message', function(req, res, next) {
   }
 });
 
-//start the server and lister to the port
-app.listen(PORT, (error) => {
-  if(!error){
-    console.log(`Server is running on port ${PORT}`);
-  } else {
-    console.error(error);
-  }
-});
 
-module.exports = app;
+
+
+module.exports = {
+  app,
+  client
+};
