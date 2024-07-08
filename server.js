@@ -1,4 +1,4 @@
-//env config and imports
+//env config and pkg imports
 require('dotenv').config();
 const PORT = process.env.PORT || 3000
 const CHANNEL_ID = process.env.CHANNEL_ID
@@ -23,11 +23,11 @@ const client = new Client({
   ],
 });
 
-//when the client is ready start the server
+//when the client is ready starts the server
 client.once('ready', () => {
   console.log(`Ready! Logged in as ${client.user.tag}`);
 
-  //start the server and listen to the port
+  //starts the server and listen to the port
   app.listen(PORT, (error) => {
     if(!error){
       console.log(`Server is running on port ${PORT}`);
@@ -37,7 +37,7 @@ client.once('ready', () => {
   });
 });
 
-//greet a new member
+//greets a new member
 client.on('guildMemberAdd', member => {
   const channel = client.channels.cache.get(CHANNEL_ID);
   if (member.user.bot) return;
@@ -56,14 +56,14 @@ client.on('messageCreate', (msg) => {
   }
 });
 
-//log in with the client token
+//logs in with the client token
 client.login(process.env.CLIENT_TOKEN);
 
 //Define routes
 // /api/server-info route
   app.get('/api/server-info', async (req, res) => {
     try {
-      //gets the guild
+      //gets the guild data
       const guild = client.guilds.cache.first();
       if (!guild) {
         return res.status(404).json({ error: 'Server not found' });
@@ -92,9 +92,9 @@ client.login(process.env.CLIENT_TOKEN);
 
 // /api/send-message route
 app.post('/api/send-message', function(req, res) {
-  if(req.headers.usertoken !== process.env.USER_TOKEN){
+  if(req.headers.usertoken !== process.env.USER_TOKEN){ //authentication layer
     res.status(401).send("Unauthorized")
-  } else if(req.body.channelID !== CHANNEL_ID){
+  } else if(req.body.channelID !== CHANNEL_ID){ //checks the channel id
     res.status(404).send("wrong text channel")
   } else {
     const channel = client.channels.cache.get(req.body.channelID)
@@ -103,10 +103,7 @@ app.post('/api/send-message', function(req, res) {
   }
 });
 
-
-
-
-module.exports = {
+module.exports = { //export modules for testing
   app,
   client
 };
