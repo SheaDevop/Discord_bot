@@ -15,6 +15,7 @@
   5. USER_TOKEN = 'an authentication token to use in post request headers'.
 * ### Go to the oauth2 tab to generate the link to invite the bot to your desired server.
 * ### Create and assign a bot role, that enables the manage roles and send messages actions.
+* ### To get the server running run: "node server.js" on your terminal inside the discord bot directory
 
 
 ## Bot functionality
