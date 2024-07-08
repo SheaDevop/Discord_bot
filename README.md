@@ -11,10 +11,10 @@
   1. CLIENT_TOKEN = 'your discord bot app token'.
   2. PORT = 'the port that the app listen'.
   3. CHANNEL_ID = 'the text channel id to send the messages'.
-  4. ROLE_ID = 'the role to assign new memebers'.
+  4. ROLE_ID = 'the role to assign to new members'.
   5. USER_TOKEN = 'an authentication token to use in post request headers'.
 * ### Go to the oauth2 tab to generate the link to invite the bot to your desired server.
-* ### Create and assign a bot role, that enables the manage roles and send messages actions.
+* ### Create and assign a role to the bot at your server that enables the manage roles and send messages actions.
 * ### To get the server running run: "node server.js" on your terminal inside the discord bot directory
 
 
