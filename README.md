@@ -20,7 +20,7 @@
 
 ## Bot functionality
 * ### Automatically greet new members upon joining using the on GuildMemberAdd event.
-* ### Automatically assign a new members upon joining using the on GuildMemberAdd event and the assignRole utility function.
+* ### Automatically assign a new members role upon joining using the on GuildMemberAdd event and the assignRole utility function.
 * ### Responds to !help command with dummy text using the on MessageCreate event and the respondToMsg utility function.
 * ### Responds to !info command with dummy text using the on MessageCreate event and the respondToMsg utility function.
 
