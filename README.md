@@ -6,7 +6,7 @@
 ## Starter Guide
 * ### Clone this repo and run npm install.
 * ### Go to https://discord.com/developers/applications.
-* ### Create your application and go to te bot tab to copy the client token.
+* ### Create your application and go to the bot tab to copy the client token.
 * ### Set up your .env file with this vars and populate its values with the desired ones:
   1. CLIENT_TOKEN = 'your discord bot app token'.
   2. PORT = 'the port that the app listen'.
@@ -20,7 +20,7 @@
 
 ## Bot functionality
 * ### Automatically greet new members upon joining using the on GuildMemberAdd event.
-* ### Automatically assign a new members role upon joining using the on GuildMemberAdd event and the assignRole utility function.
+* ### Automatically assign new members a role upon joining using the on GuildMemberAdd event and the assignRole utility function.
 * ### Responds to !help command with dummy text using the on MessageCreate event and the respondToMsg utility function.
 * ### Responds to !info command with dummy text using the on MessageCreate event and the respondToMsg utility function.
 
